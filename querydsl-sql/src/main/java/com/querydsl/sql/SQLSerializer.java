@@ -703,12 +703,12 @@ public class SQLSerializer extends SerializerBase<SQLSerializer> {
         if (members == null || members.size() == 0) {
             return;
         }
-        for (int i=0;i<members.size(); ++i) {
+        for (int i = 0; i < members.size(); ++i) {
             append("(");
             Union member = members.get(i);
             handleUnion(member);
             append(")");
-            if (i != members.size()-1) {
+            if (i != members.size() - 1) {
                 append(" " + unionGroup.getOperationType().name() + " ");
             }
         }
