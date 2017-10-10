@@ -354,6 +354,7 @@ public class SQLTemplates extends Templates {
 
         add(SQLOps.CAST, "cast({0} as {1s})");
         add(SQLOps.UNION, "{0}\nunion\n{1}", Precedence.OR + 1);
+        add(SQLOps.INTERSECT, "{0}\nintersect\n{1}", Precedence.AND + 1);
         add(SQLOps.UNION_ALL, "{0}\nunion all\n{1}", Precedence.OR + 1);
         add(SQLOps.NEXTVAL, "nextval('{0s}')");
 

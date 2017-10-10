@@ -962,7 +962,7 @@ public class SQLSerializer extends SerializerBase<SQLSerializer> {
             super.visitOperation(type, SQLOps.UNION, args);
             inUnion = oldUnion;
 
-        } else if (operator == SQLOps.UNION || operator == SQLOps.UNION_ALL) {
+        } else if (operator == SQLOps.UNION || operator == SQLOps.INTERSECT || operator == SQLOps.UNION_ALL) {
             boolean oldUnion = inUnion;
             inUnion = true;
             super.visitOperation(type, operator, args);
