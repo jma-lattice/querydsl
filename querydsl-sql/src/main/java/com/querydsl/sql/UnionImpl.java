@@ -123,4 +123,11 @@ public class UnionImpl<T, Q extends ProjectableSQLQuery<T, Q> & Query<Q>>  imple
         return query.getMetadata();
     }
 
+    public SubQueryExpression<?> getFirstUnionSubQuery() {
+        return query.firstUnionSubQuery;
+    }
+
+    public Expression<?> getInnerUnion() {
+        return query.union;
+    }
 }

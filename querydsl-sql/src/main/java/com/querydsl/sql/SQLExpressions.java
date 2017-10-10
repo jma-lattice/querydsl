@@ -219,6 +219,25 @@ public final class SQLExpressions {
         return new SQLQuery<Void>().union(sq);
     }
 
+    public static <T> Union<T> union(Union<T>... unions) {
+        return new SQLQuery<Void>().union(unions);
+    }
+
+    /**
+     * Create a new INTERSECT clause
+     *
+     * @param sq subqueries
+     * @param <T>
+     * @return union
+     */
+    public static<T> Union<T> intersect(SubQueryExpression<T>... sq) {
+        return new SQLQuery<Void>().intersect(sq);
+    }
+
+    public static <T> Union<T> intersect(Union<T>... unions) {
+        return new SQLQuery<Void>().intersect(unions);
+    }
+
     /**
      * Create a new UNION clause
      *
@@ -239,6 +258,10 @@ public final class SQLExpressions {
      */
     public static <T> Union<T> unionAll(SubQueryExpression<T>... sq) {
         return new SQLQuery<Void>().unionAll(sq);
+    }
+
+    public static <T> Union<T> unionAll(Union<T>... unions) {
+        return new SQLQuery<Void>().unionAll(unions);
     }
 
     /**

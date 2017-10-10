@@ -39,6 +39,7 @@ public enum SQLOps implements Operator {
     FIRSTVALUE(Object.class),
     FOR_SHARE(Object.class),
     FOR_UPDATE(Object.class),
+    INTERSECT(Object.class),
     LAG(Object.class),
     LASTVALUE(Object.class),
     LEAD(Object.class),

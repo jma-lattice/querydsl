@@ -688,6 +688,32 @@ public class SQLSerializer extends SerializerBase<SQLSerializer> {
         }
     }
 
+    private void handleUnion(Union union) {
+        Expression<?> innerUnion = ((UnionImpl) union).getInnerUnion();
+        if (innerUnion instanceof UnionGroup) {
+            handleUnionGroup((UnionGroup) innerUnion);
+        } else {
+            handle(innerUnion);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void handleUnionGroup(UnionGroup unionGroup) {
+        List<Union<?>> members = unionGroup.getMembers();
+        if (members == null || members.size() == 0) {
+            return;
+        }
+        for (int i=0;i<members.size(); ++i) {
+            append("(");
+            Union member = members.get(i);
+            handleUnion(member);
+            append(")");
+            if (i != members.size()-1) {
+                append(" " + unionGroup.getOperationType().name() + " ");
+            }
+        }
+    }
+
     public void serializeUnion(Expression<?> union, QueryMetadata metadata, boolean unionAll) {
         final List<? extends Expression<?>> groupBy = metadata.getGroupBy();
         final Predicate having = metadata.getHaving();
@@ -724,7 +750,11 @@ public class SQLSerializer extends SerializerBase<SQLSerializer> {
 
         // union
         Stage oldStage = stage;
-        handle(union);
+        if (union instanceof UnionGroup) {
+            handleUnionGroup((UnionGroup) union);
+        } else {
+            handle(union);
+        }
 
         // group by
         if (hasFlags) {
