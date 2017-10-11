@@ -310,7 +310,7 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
     private <RT> Union<RT> innerIntersect(List<SubQueryExpression<RT>> sq) {
         queryMixin.setProjection(sq.get(0).getMetadata().getProjection());
         if (!queryMixin.getMetadata().getJoins().isEmpty()) {
-            throw new IllegalArgumentException("Don't mix union and from");
+            throw new IllegalArgumentException("Don't mix intersect and from");
         }
         this.union = UnionUtils.intersect(sq);
         this.firstUnionSubQuery = sq.get(0);
@@ -340,30 +340,6 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
     @SuppressWarnings("unchecked")
     public <RT> Union<RT> intersect(SubQueryExpression<RT>... sq) {
         return innerIntersect((List) ImmutableList.copyOf(sq));
-    }
-
-    public <RT> Union<RT> union(Union<RT>... unions) {
-        return innerUnionOps(SQLOps.UNION, unions);
-    }
-
-    public <RT> Union<RT> unionAll(Union<RT>... unions) {
-        return innerUnionOps(SQLOps.UNION_ALL, unions);
-    }
-
-    public <RT> Union<RT> intersect(Union<RT>... unions) {
-        return innerUnionOps(SQLOps.INTERSECT, unions);
-    }
-
-    @SuppressWarnings("unchecked")
-    private <RT> Union<RT> innerUnionOps(SQLOps ops, Union<RT>... unions) {
-        UnionImpl union = (UnionImpl) unions[0];
-        queryMixin.setProjection(union.getMetadata().getProjection());
-        if (!queryMixin.getMetadata().getJoins().isEmpty()) {
-            throw new IllegalArgumentException("Don't mix union and from");
-        }
-        this.union = new UnionGroupImpl<RT>(ops, unions);
-        this.firstUnionSubQuery = union.getFirstUnionSubQuery();
-        return new UnionImpl(this);
     }
 
     /**
