@@ -297,6 +297,11 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
     }
 
     @SuppressWarnings("unchecked")
+    private <RT> Union<RT> innerIntersect(SubQueryExpression<?>... sq) {
+        return innerIntersect((List) ImmutableList.copyOf(sq));
+    }
+
+    @SuppressWarnings("unchecked")
     private <RT> Union<RT> innerUnion(List<SubQueryExpression<RT>> sq) {
         queryMixin.setProjection(sq.get(0).getMetadata().getProjection());
         if (!queryMixin.getMetadata().getJoins().isEmpty()) {
@@ -338,9 +343,42 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
         return innerUnion(sq);
     }
 
+    /**
+     * Creates an intersect expression for the given subqueries
+     *
+     * @param <RT>
+     * @param sq subqueries
+     * @return intersect
+     */
     @SuppressWarnings("unchecked")
     public <RT> Union<RT> intersect(SubQueryExpression<RT>... sq) {
-        return innerIntersect((List) ImmutableList.copyOf(sq));
+        return innerIntersect(sq);
+    }
+
+    /**
+     * Creates an intersect expression for the given subqueries
+     *
+     * @param <RT>
+     * @param sq subqueries
+     * @return intersect
+     */
+    @SuppressWarnings("unchecked")
+    public <RT> Union<RT> intersect(List<SubQueryExpression<RT>> sq) {
+        return innerIntersect(sq);
+    }
+
+    /**
+     * Creates an intersect expression for the given subqueries
+     *
+     * @param <RT>
+     * @param alias alias for intersect
+     * @param sq subqueries
+     * @return the current object
+     */
+    @SuppressWarnings("unchecked")
+    public <RT> Q intersect(Path<?> alias, SubQueryExpression<RT>... sq) {
+        Expression<?> intersect = UnionUtils.intersect(ImmutableList.copyOf(sq), (Path) alias);
+        return from(intersect);
     }
 
     /**

@@ -43,6 +43,11 @@ final class UnionUtils {
         return rv;
     }
 
+    public static <T> Expression<T> intersect(List<SubQueryExpression<T>> union, Path<T> alias) {
+        final Expression<T> rv = intersect(union);
+        return ExpressionUtils.as(rv, alias);
+    }
+
     public static <T> Expression<T> union(List<SubQueryExpression<T>> union, Path<T> alias,
             boolean unionAll) {
         final Expression<T> rv = union(union, unionAll);
