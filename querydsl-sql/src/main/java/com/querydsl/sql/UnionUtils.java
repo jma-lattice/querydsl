@@ -25,6 +25,15 @@ import com.querydsl.core.types.*;
  */
 final class UnionUtils {
 
+    public static <T> Expression<T> except(List<SubQueryExpression<T>> except) {
+        final Operator operator = SQLOps.EXCEPT;
+        Expression<T> rv = except.get(0);
+        for (int i = 1; i < except.size(); i++) {
+            rv = ExpressionUtils.operation(rv.getType(), operator, rv, except.get(i));
+        }
+        return rv;
+    }
+
     public static <T> Expression<T> intersect(List<SubQueryExpression<T>> intersect) {
         final Operator operator = SQLOps.INTERSECT;
         Expression<T> rv = intersect.get(0);
@@ -41,6 +50,11 @@ final class UnionUtils {
             rv = ExpressionUtils.operation(rv.getType(), operator, rv, union.get(i));
         }
         return rv;
+    }
+
+    public static <T> Expression<T> except(List<SubQueryExpression<T>> union, Path<T> alias) {
+        final Expression<T> rv = except(union);
+        return ExpressionUtils.as(rv, alias);
     }
 
     public static <T> Expression<T> intersect(List<SubQueryExpression<T>> union, Path<T> alias) {

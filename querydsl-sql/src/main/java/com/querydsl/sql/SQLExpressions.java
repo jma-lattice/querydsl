@@ -231,6 +231,17 @@ public final class SQLExpressions {
     }
 
     /**
+     * Create a new except clause
+     *
+     * @param sq subqueries
+     * @param <T>
+     * @return union
+     */
+    public static<T> Union<T> except(SubQueryExpression<T>... sq) {
+        return new SQLQuery<Void>().except(sq);
+    }
+
+    /**
      * Create a new UNION clause
      *
      * @param sq subqueries

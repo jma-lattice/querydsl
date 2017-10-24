@@ -36,6 +36,7 @@ public enum SQLOps implements Operator {
     CUMEDIST2(Double.class),
     DENSERANK(Long.class),
     DENSERANK2(Long.class),
+    EXCEPT(Object.class),
     FIRSTVALUE(Object.class),
     FOR_SHARE(Object.class),
     FOR_UPDATE(Object.class),

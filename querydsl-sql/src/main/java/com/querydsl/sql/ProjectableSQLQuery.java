@@ -302,6 +302,11 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
     }
 
     @SuppressWarnings("unchecked")
+    private <RT> Union<RT> innerExcept(SubQueryExpression<?>... sq) {
+        return innerExcept((List) ImmutableList.copyOf(sq));
+    }
+
+    @SuppressWarnings("unchecked")
     private <RT> Union<RT> innerUnion(List<SubQueryExpression<RT>> sq) {
         queryMixin.setProjection(sq.get(0).getMetadata().getProjection());
         if (!queryMixin.getMetadata().getJoins().isEmpty()) {
@@ -319,6 +324,17 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
             throw new IllegalArgumentException("Don't mix intersect and from");
         }
         this.union = UnionUtils.intersect(sq);
+        this.firstUnionSubQuery = sq.get(0);
+        return new UnionImpl(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <RT> Union<RT> innerExcept(List<SubQueryExpression<RT>> sq) {
+        queryMixin.setProjection(sq.get(0).getMetadata().getProjection());
+        if (!queryMixin.getMetadata().getJoins().isEmpty()) {
+            throw new IllegalArgumentException("Don't mix except and from");
+        }
+        this.union = UnionUtils.except(sq);
         this.firstUnionSubQuery = sq.get(0);
         return new UnionImpl(this);
     }
@@ -341,6 +357,31 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
      */
     public <RT> Union<RT> union(SubQueryExpression<RT>... sq) {
         return innerUnion(sq);
+    }
+
+    /**
+     * Creates an union expression for the given subqueries
+     *
+     * @param <RT>
+     * @param sq subqueries
+     * @return union
+     */
+    public <RT> Union<RT> union(List<SubQueryExpression<RT>> sq) {
+        return innerUnion(sq);
+    }
+
+    /**
+     * Creates an union expression for the given subqueries
+     *
+     * @param <RT>
+     * @param alias alias for union
+     * @param sq subqueries
+     * @return the current object
+     */
+    @SuppressWarnings("unchecked")
+    public <RT> Q union(Path<?> alias, SubQueryExpression<RT>... sq) {
+        Expression<?> union = UnionUtils.union(ImmutableList.copyOf(sq), (Path) alias, false);
+        return from(union);
     }
 
     /**
@@ -382,28 +423,41 @@ public abstract class ProjectableSQLQuery<T, Q extends ProjectableSQLQuery<T, Q>
     }
 
     /**
-     * Creates an union expression for the given subqueries
+     * Creates an except expression for the given subqueries
      *
      * @param <RT>
      * @param sq subqueries
-     * @return union
+     * @return except
      */
-    public <RT> Union<RT> union(List<SubQueryExpression<RT>> sq) {
-        return innerUnion(sq);
+    @SuppressWarnings("unchecked")
+    public <RT> Union<RT> except(SubQueryExpression<RT>... sq) {
+        return innerExcept(sq);
     }
 
     /**
-     * Creates an union expression for the given subqueries
+     * Creates an except expression for the given subqueries
      *
      * @param <RT>
-     * @param alias alias for union
+     * @param sq subqueries
+     * @return except
+     */
+    @SuppressWarnings("unchecked")
+    public <RT> Union<RT> except(List<SubQueryExpression<RT>> sq) {
+        return innerExcept(sq);
+    }
+
+    /**
+     * Creates an except expression for the given subqueries
+     *
+     * @param <RT>
+     * @param alias alias for except
      * @param sq subqueries
      * @return the current object
      */
     @SuppressWarnings("unchecked")
-    public <RT> Q union(Path<?> alias, SubQueryExpression<RT>... sq) {
-        Expression<?> union = UnionUtils.union(ImmutableList.copyOf(sq), (Path) alias, false);
-        return from(union);
+    public <RT> Q except(Path<?> alias, SubQueryExpression<RT>... sq) {
+        Expression<?> intersect = UnionUtils.except(ImmutableList.copyOf(sq), (Path) alias);
+        return from(intersect);
     }
 
     /**
