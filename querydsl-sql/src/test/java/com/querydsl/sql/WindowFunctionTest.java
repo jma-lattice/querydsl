@@ -92,7 +92,7 @@ public class WindowFunctionTest {
                 toString(wf.rows().between().currentRow().unboundedFollowing()));
         assertEquals("sum(path) over (order by path asc rows between intPath preceding and intPath following)",
                 toString(wf.rows().between().preceding(intPath).following(intPath)));
-        assertEquals("sum(path) over (order by path asc rows between ? preceding and ? following)",
+        assertEquals("sum(path) over (order by path asc rows between 1 preceding and 3 following)",
                 toString(wf.rows().between().preceding(1).following(3)));
     }
 
@@ -122,7 +122,7 @@ public class WindowFunctionTest {
 
         assertEquals("sum(path) over (order by path asc rows intPath preceding)",
                 toString(wf.rows().preceding(intPath)));
-        assertEquals("sum(path) over (order by path asc rows ? preceding)",
+        assertEquals("sum(path) over (order by path asc rows 3 preceding)",
                 toString(wf.rows().preceding(3)));
     }
 

@@ -23,7 +23,6 @@ import com.querydsl.core.types.Expression;
  * {@code WindowRows} provides the building of the rows/range part of the window function expression
  *
  * @param <A> expression type
- *
  * @author tiwe
  */
 public class WindowRows<A> {
@@ -57,8 +56,7 @@ public class WindowRows<A> {
         }
 
         public BetweenAnd preceding(Expression<Integer> expr) {
-            args.add(expr);
-            str.append(" {" + (offset++) + "}");
+            str.append(" " + expr.toString());
             str.append(PRECEDING);
             return new BetweenAnd();
         }
@@ -68,8 +66,7 @@ public class WindowRows<A> {
         }
 
         public BetweenAnd following(Expression<Integer> expr) {
-            args.add(expr);
-            str.append(" {" + (offset++) + "}");
+            str.append(" " + expr.toString() + " ");
             str.append(FOLLOWING);
             return new BetweenAnd();
         }
@@ -100,8 +97,7 @@ public class WindowRows<A> {
         }
 
         public WindowFunction<A> preceding(Expression<Integer> expr) {
-            args.add(expr);
-            str.append(" {" + (offset++) + "}");
+            str.append(" " + expr.toString());
             str.append(PRECEDING);
             return rv.withRowsOrRange(str.toString(), args);
         }
@@ -111,8 +107,7 @@ public class WindowRows<A> {
         }
 
         public WindowFunction<A> following(Expression<Integer> expr) {
-            args.add(expr);
-            str.append(" {" + (offset++) + "}");
+            str.append(" " + expr.toString());
             str.append(FOLLOWING);
             return rv.withRowsOrRange(str.toString(), args);
         }
@@ -153,8 +148,7 @@ public class WindowRows<A> {
     }
 
     public WindowFunction<A> preceding(Expression<Integer> expr) {
-        args.add(expr);
-        str.append(" {" + (offset++) + "}");
+        str.append(" " + expr.toString());
         str.append(PRECEDING);
         return rv.withRowsOrRange(str.toString(), args);
     }
